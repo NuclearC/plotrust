@@ -4,7 +4,6 @@ use std::f64::consts::PI;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::libc::xdp_ring_offset;
 use sdl2::pixels::Color;
 use sdl2::rect::{Point, Rect};
 
@@ -202,10 +201,10 @@ fn main() {
                     keycode,
                     ..
                 } => match keycode.unwrap() {
-                    Keycode::W => mov.1 = 0.0001,
-                    Keycode::A => mov.0 = 0.0001,
-                    Keycode::S => mov.1 = -0.0001,
-                    Keycode::D => mov.0 = -0.0001,
+                    Keycode::W => mov.1 = 0.0001 * view.zoom,
+                    Keycode::A => mov.0 = 0.0001 * view.zoom,
+                    Keycode::S => mov.1 = -0.0001 * view.zoom,
+                    Keycode::D => mov.0 = -0.0001 * view.zoom,
                     Keycode::Escape => {
                         break 'main_loop;
                     }
@@ -249,6 +248,15 @@ fn main() {
         }
         canvas.set_draw_color(Color::RGB(0, 0xff, 0));
         draw_function(&mut canvas, &view, |x| PI * (x / PI).sin(), -5.0, 5.0, 40);
+        canvas.set_draw_color(Color::RGB(0, 0, 0xff));
+        draw_function(
+            &mut canvas,
+            &view,
+            |x| x * x * x - x * x - 2.0,
+            -3.0,
+            3.0,
+            20,
+        );
 
         canvas.present();
     }
